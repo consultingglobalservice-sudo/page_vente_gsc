@@ -1121,5 +1121,20 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   URL.revokeObjectURL(url);
 });
 </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  var liensDiagnostic = document.querySelectorAll(
+    'a[href*="1FAIpQLSehpM0W7e0Vqjc3IMEntld0yt-qVtSFZ2JgQBS_BUlO6PM6Wg"]'
+  );
+  liensDiagnostic.forEach(function (lien) {
+    lien.addEventListener('click', function () {
+      fbq('track', 'Lead', {
+        content_name: lien.textContent.trim(),
+        content_category: 'Diagnostic GSC'
+      });
+    });
+  });
+});
+</script>
 </body>
 </html>

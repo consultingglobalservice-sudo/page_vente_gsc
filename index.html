@@ -1121,18 +1121,53 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   URL.revokeObjectURL(url);
 });
 </script>
-  <script>
+ <div id="gsc-form-modal" style="display:none; position:fixed; inset:0; background:rgba(18,35,63,0.75); z-index:9999; align-items:center; justify-content:center;">
+  <div style="position:relative; width:92%; max-width:640px; height:85vh; background:#fff; border-radius:12px; overflow:hidden;">
+    <button id="gsc-form-close" aria-label="Fermer" style="position:absolute; top:8px; right:10px; z-index:2; background:#12233F; color:#fff; border:none; width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer;">×</button>
+    <iframe id="gsc-form-iframe" src="" style="width:100%; height:100%; border:0;"></iframe>
+  </div>
+</div>
+
+<script>
 document.addEventListener('DOMContentLoaded', function () {
+  var modal = document.getElementById('gsc-form-modal');
+  var iframe = document.getElementById('gsc-form-iframe');
+  var closeBtn = document.getElementById('gsc-form-close');
+  var formBaseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSehpM0W7e0Vqjc3IMEntld0yt-qVtSFZ2JgQBS_BUlO6PM6Wg/viewform?embedded=true';
+  var loadCount = 0;
+
   var liensDiagnostic = document.querySelectorAll(
     'a[href*="1FAIpQLSehpM0W7e0Vqjc3IMEntld0yt-qVtSFZ2JgQBS_BUlO6PM6Wg"]'
   );
+
   liensDiagnostic.forEach(function (lien) {
-    lien.addEventListener('click', function () {
+    lien.addEventListener('click', function (e) {
+      e.preventDefault();
+
       fbq('track', 'Lead', {
         content_name: lien.textContent.trim(),
         content_category: 'Diagnostic GSC'
       });
+
+      loadCount = 0;
+      iframe.src = formBaseUrl;
+      modal.style.display = 'flex';
     });
+  });
+
+  iframe.addEventListener('load', function () {
+    loadCount++;
+    if (loadCount === 2) {
+      fbq('track', 'CompleteRegistration', {
+        content_name: 'Diagnostic GSC',
+        content_category: 'Formulaire envoyé'
+      });
+    }
+  });
+
+  closeBtn.addEventListener('click', function () {
+    modal.style.display = 'none';
+    iframe.src = '';
   });
 });
 </script>
